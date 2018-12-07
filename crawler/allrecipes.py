@@ -491,7 +491,7 @@ cursor.execute("""
         step INT NOT NULL
     );
 """)
-cursor.commit()
+db.commit()
 
 outputFile = open("output.txt", "w")
 outputFile.truncate()
