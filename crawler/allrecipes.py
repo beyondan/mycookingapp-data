@@ -536,16 +536,15 @@ for recipeId in range(6660, 27000):
         outputFile.write("{0}: SOCKET ERROR".format(recipeId))
 
     if soup:
-        titleSpan = soup.find("title")
         servingSpan = soup.find("span", class_="servings-count")
         calorieSpan = soup.find("span", class_="calorie-count")
-        directionObjects = soup.find_all("span", class_="recipe-directions__list--item")
         ingredientObjects = soup.find_all("span", class_="recipe-ingred_txt")
         footnotesSection = soup.find("section", class_="recipe-footnotes")
 
         #
         # get title
         #
+        titleSpan = soup.find("title")
         title = titleSpan.text.split("Recipe")[0].strip()
         title = title.replace("Linguini", "Linguine")
         title = title.replace("Genoese", "Genoise")
@@ -826,20 +825,29 @@ for recipeId in range(6660, 27000):
         # get directions
         #
 
-        # get number of spans and concatenate all contents to string
-        count = len(directionObjects) - 1  # 1 empty span at end
-        directionsString = directionObjects[0].text
-        for i in range(1, count):
-            directionsString += " " + directionObjects[i].text
-
-        # use nltk to split direction string into sentences
-        directionsArray = sent_tokenize(directionsString)
         directions = []
-        for i in range(0, len(directionsArray)):
-            direction = {}
-            direction["step"] = i
-            direction["direction"] = directionsArray[i]
-            directions.append(direction)
+        directionObjects = soup.find_all("span", class_="recipe-directions__list--item")
+        if not directionObjects:
+            directionObjects = soup.find_all("li", class_="instructions-section-item")
+            for i in range(len(directionObjects)):
+                direction = {}
+                direction["step"] = i
+                direction["direction"] = directionObjects[i].find("p").text
+                directions.append(direction)
+        else:
+            # get number of spans and concatenate all contents to string
+            count = len(directionObjects) - 1  # 1 empty span at end
+            directionsString = directionObjects[0].text
+            for i in range(1, count):
+                directionsString += " " + directionObjects[i].text
+
+            # use nltk to split direction string into sentences
+            directionsArray = sent_tokenize(directionsString)
+            for i in range(0, len(directionsArray)):
+                direction = {}
+                direction["step"] = i
+                direction["direction"] = directionsArray[i]
+                directions.append(direction)
 
         #
         # get footnotes
