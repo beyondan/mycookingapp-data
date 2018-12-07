@@ -481,7 +481,7 @@ for recipeId in range(6660, 27000):
         outputFile.write("{0}: SOCKET ERROR".format(recipeId))
 
     if soup:
-        titleSpan = soup.find("h1", class_="recipe-summary__h1")
+        titleSpan = soup.find("title")
         servingSpan = soup.find("span", class_="servings-count")
         calorieSpan = soup.find("span", class_="calorie-count")
         directionObjects = soup.find_all("span", class_="recipe-directions__list--item")
@@ -491,7 +491,7 @@ for recipeId in range(6660, 27000):
         #
         # get title
         #
-        title = titleSpan.text
+        title = titleSpan.text.split("Recipe")[0].strip()
         title = title.replace("Linguini", "Linguine")
         title = title.replace("Genoese", "Genoise")
 
