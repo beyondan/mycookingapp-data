@@ -490,7 +490,7 @@ cursor.execute("""
         direction VARCHAR(500) NOT NULL,
         step INT NOT NULL
     );
-""")
+""", multi=True)
 db.commit()
 
 outputFile = open("output.txt", "w")
