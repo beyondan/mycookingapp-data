@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import mysql.connector
 import urllib.request
 import re
@@ -445,66 +446,72 @@ hypenatedSuffixes = ['coated', 'free', 'flavored']
 #
 # main function
 #
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--checkpoint", type=int, defaultValue=6660)
+args = parser.parse_args()
+checkpoint = int(args.checkpoint)
 db = mysql.connector.connect(host="localhost",
                              user="root",
                              passwd="root",
                              db="recipes")
 cursor = db.cursor()
-cursor.execute("""
-    DROP TABLE Recipe
-""")
-cursor.execute("""
-    DROP TABLE RecipeImages;
-""")
-cursor.execute("""
-    DROP TABLE Ingredients;
-""")
-cursor.execute("""
-    DROP TABLE RecipeIngredients;
-""")
-cursor.execute("""
-    DROP TABLE Directions;
-""")
-cursor.execute("""
-    CREATE TABLE Recipe(
-        recipe_id INT NOT NULL UNIQUE KEY AUTO_INCREMENT,
-        name VARCHAR(300) NOT NULL PRIMARY KEY,
-        source VARCHAR(300),
-        source_url VARCHAR(300),
-        calories INT,
-        servings INT
-    );
-""")
-cursor.execute("""
-    CREATE TABLE RecipeImages(
-        recipe_id INT,
-        url VARCHAR(300) NOT NULL
-    );
-""")
-cursor.execute("""
-    CREATE TABLE Ingredients(
-        ingredient_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        name VARCHAR(300) NOT NULL UNIQUE KEY,
-        tags VARCHAR(300)
-    );
-""")
-cursor.execute("""
-    CREATE TABLE RecipeIngredients(
-        recipe_id INT NOT NULL,
-        ingredient_id INT NOT NULL,
-        amount FLOAT,
-        unit VARCHAR(20),
-        extra_descriptions VARCHAR(300)
-    );
-""")
-cursor.execute("""
-    CREATE TABLE Directions(
-        recipe_id INT NOT NULL,
-        direction VARCHAR(500) NOT NULL,
-        step INT NOT NULL
-    );
-""")
-db.commit()
+if checkpoint == 6660:
+    cursor.execute("""
+        DROP TABLE Recipe
+    """)
+    cursor.execute("""
+        DROP TABLE RecipeImages;
+    """)
+    cursor.execute("""
+        DROP TABLE Ingredients;
+    """)
+    cursor.execute("""
+        DROP TABLE RecipeIngredients;
+    """)
+    cursor.execute("""
+        DROP TABLE Directions;
+    """)
+    cursor.execute("""
+        CREATE TABLE Recipe(
+            recipe_id INT NOT NULL UNIQUE KEY AUTO_INCREMENT,
+            name VARCHAR(300) NOT NULL PRIMARY KEY,
+            source VARCHAR(300),
+            source_url VARCHAR(300),
+            calories INT,
+            servings INT
+        );
+    """)
+    cursor.execute("""
+        CREATE TABLE RecipeImages(
+            recipe_id INT,
+            url VARCHAR(300) NOT NULL
+        );
+    """)
+    cursor.execute("""
+        CREATE TABLE Ingredients(
+            ingredient_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            name VARCHAR(300) NOT NULL UNIQUE KEY,
+            tags VARCHAR(300)
+        );
+    """)
+    cursor.execute("""
+        CREATE TABLE RecipeIngredients(
+            recipe_id INT NOT NULL,
+            ingredient_id INT NOT NULL,
+            amount FLOAT,
+            unit VARCHAR(20),
+            extra_descriptions VARCHAR(300)
+        );
+    """)
+    cursor.execute("""
+        CREATE TABLE Directions(
+            recipe_id INT NOT NULL,
+            direction VARCHAR(500) NOT NULL,
+            step INT NOT NULL
+        );
+    """)
+    db.commit()
 
 outputFile = open("output.txt", "w")
 outputFile.truncate()
@@ -518,7 +525,7 @@ unlabeledIngredients = set()
 unlabeledRecipes = set()
 
 # recipes start at id~6660 and end at id=~27000
-for recipeId in range(6660, 27000):
+for recipeId in range(checkpoint, 27000):
     soup = None
     try:
         url = "http://allrecipes.com/recipe/{}".format(recipeId)
