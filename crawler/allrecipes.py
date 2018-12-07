@@ -451,12 +451,21 @@ db = mysql.connector.connect(host="localhost",
                              db="recipes")
 cursor = db.cursor()
 cursor.execute("""
-    DROP TABLE Recipe;
+    DROP TABLE Recipe
+""")
+cursor.execute("""
     DROP TABLE RecipeImages;
+""")
+cursor.execute("""
     DROP TABLE Ingredients;
+""")
+cursor.execute("""
     DROP TABLE RecipeIngredients;
+""")
+cursor.execute("""
     DROP TABLE Directions;
-
+""")
+cursor.execute("""
     CREATE TABLE Recipe(
         recipe_id INT NOT NULL UNIQUE KEY AUTO_INCREMENT,
         name VARCHAR(300) NOT NULL PRIMARY KEY,
@@ -465,18 +474,21 @@ cursor.execute("""
         calories INT,
         servings INT
     );
-
+""")
+cursor.execute("""
     CREATE TABLE RecipeImages(
         recipe_id INT,
         url VARCHAR(300) NOT NULL
     );
-
+""")
+cursor.execute("""
     CREATE TABLE Ingredients(
         ingredient_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         name VARCHAR(300) NOT NULL UNIQUE KEY,
         tags VARCHAR(300)
     );
-
+""")
+cursor.execute("""
     CREATE TABLE RecipeIngredients(
         recipe_id INT NOT NULL,
         ingredient_id INT NOT NULL,
@@ -484,13 +496,14 @@ cursor.execute("""
         unit VARCHAR(20),
         extra_descriptions VARCHAR(300)
     );
-
+""")
+cursor.execute("""
     CREATE TABLE Directions(
         recipe_id INT NOT NULL,
         direction VARCHAR(500) NOT NULL,
         step INT NOT NULL
     );
-""", multi=True)
+""")
 db.commit()
 
 outputFile = open("output.txt", "w")
