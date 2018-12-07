@@ -867,7 +867,7 @@ for recipeId in range(6660, 27000):
         else:
             calories = 0
 
-        print(f"Inserting {title}...")
+        print(f"Inserting {recipeId}({title}) ...")
         #
         # insert recipe into database
         #
@@ -887,7 +887,7 @@ for recipeId in range(6660, 27000):
             )
         """
         # print(f"Executing:\n{query}")
-        print("\tRecipe...")
+        # print("\tRecipe...")
         cursor.execute(query, (title, 'allrecipes', url, calories, servings))
 
         #
@@ -905,7 +905,7 @@ for recipeId in range(6660, 27000):
         cursor.execute(query, (title, url, calories, servings))
         internalRecipeId = cursor.fetchall()[0][0]
 
-        print("\tRecipeImages...")
+        # print("\tRecipeImages...")
         for imageLink in imageLinks:
             query = """
                 INSERT INTO RecipeImages (
@@ -923,7 +923,7 @@ for recipeId in range(6660, 27000):
         # insert ingredients into database
         #
         for ingredient in ingredients:
-            print("\tIngredients...")
+            # print("\tIngredients...")
             try:
                 query = """
                     INSERT INTO Ingredients (
@@ -948,7 +948,7 @@ for recipeId in range(6660, 27000):
             """, (ingredient['ingredient'],))
             ingredientId = cursor.fetchall()[0][0]
 
-            print("\tRecipeIngredients...")
+            # print("\tRecipeIngredients...")
             cursor.execute("""
                 INSERT INTO RecipeIngredients (
                     recipe_id,
@@ -968,7 +968,7 @@ for recipeId in range(6660, 27000):
                 ','.join(ingredient['descriptions'])
             ))
 
-        print("\tDirections...")
+        # print("\tDirections...")
         for direction in directions:
             cursor.execute("""
                 INSERT INTO Directions (
