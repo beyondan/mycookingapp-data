@@ -1,0 +1,14 @@
+sudo apt update
+sudo apt install -y mysql-server
+sudo mysql_secure_installation
+sudo systemctl start mysql
+sudo systemctl enable mysql
+
+# sudo mysql -u root -p
+#   ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+
+sudo apt install -y python3
+sudo apt install -y python3-pip
+sudo apt install build-essential libssl-dev libffi-dev python3-dev
+
+sudo apt install git
