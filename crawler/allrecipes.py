@@ -879,8 +879,8 @@ for recipeId in range(6660, 27000):
                 """
                 # print(f"Executing:\n{query}")
                 cursor.execute(query, (ingredient['ingredient'], ','.join(ingredient['labels'])))
-            except mysql.connect.IntegrityError as e:
-                if not e.errno == mysql.connect.errorcode.ER_DUP_ENTRY:
+            except mysql.connector.IntegrityError as e:
+                if not e.errno == mysql.connector.errorcode.ER_DUP_ENTRY:
                     raise
                 # print(f"Ingredient {ingredient['ingredient']} already exists in Ingredients")
 
