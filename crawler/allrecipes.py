@@ -6,11 +6,10 @@ from bs4 import BeautifulSoup
 from nltk.tokenize import sent_tokenize
 from socket import error as SocketError
 
+
 #
 # checks whether the first argument is the same word as a plural string, checking plurals
 #
-
-
 def equalCheckingPlurals(string, pluralString):
     # only check plurals if first 3 letters match
     if string[0] != pluralString[0]:
@@ -815,7 +814,7 @@ for recipeId in range(6660, 27000):
         #
         # insert recipe into database
         #
-        query = f"""
+        query = """
             INSERT INTO Recipe (
                 name,
                 source,
@@ -823,45 +822,45 @@ for recipeId in range(6660, 27000):
                 calories,
                 servings
             ) VALUES (
-                '{title}',
-                'allrecipes',
-                '{url}',
-                {calories},
-                {servings}
+                %s,
+                %s,
+                %s,
+                %s,
+                %s
             )
         """
         # print(f"Executing:\n{query}")
         print("\tRecipe...")
-        cursor.execute(query)
+        cursor.execute(query, (title, 'allrecipes', url, calories, servings))
 
         #
         # insert recipe images into database
         #
-        query = f"""
+        query = """
             SELECT recipe_id
             FROM Recipe
-            WHERE name = '{title}'
-            AND source_url = '{url}'
-            AND calories = {calories}
-            AND servings = {servings}
+            WHERE name = %s
+            AND source_url = %s
+            AND calories = %s
+            AND servings = %s
         """
         # print(f"Executing:\n{query}")
-        cursor.execute(query)
+        cursor.execute(query, (title, url, calories, servings))
         recipeId = cursor.fetchall()[0][0]
 
         print("\tRecipeImages...")
         for imageLink in imageLinks:
-            query = f"""
+            query = """
                 INSERT INTO RecipeImages (
                     recipe_id,
                     url
                 ) VALUES (
-                    {recipeId},
-                    '{imageLink}'
+                    %s,
+                    %s
                 )
             """
             # print(f"Executing:\n{query}")
-            cursor.execute(query)
+            cursor.execute(query, (recipeId, imageLink))
 
         #
         # insert ingredients into database
@@ -869,30 +868,30 @@ for recipeId in range(6660, 27000):
         print("\tIngredients...")
         for ingredient in ingredients:
             try:
-                query = f"""
+                query = """
                     INSERT INTO Ingredients (
                         name,
                         tags
                     ) VALUES (
-                        '{ingredient['ingredient']}',
-                        '{','.join(ingredient['labels'])}'
+                        %s,
+                        %s
                     )
                 """
                 # print(f"Executing:\n{query}")
-                cursor.execute(query)
+                cursor.execute(query, (ingredient['ingredient'], ','.join(ingredient['labels'])))
             except mysql.connect.Error as e:
                 if not e.errno == mysql.connect.errorcode.ER_DUP_KEY:
                     raise
                 # print(f"Ingredient {ingredient['ingredient']} already exists in Ingredients")
 
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT ingredient_id
                 FROM Ingredients
-                WHERE name = '{ingredient['ingredient']}'
-            """)
+                WHERE name = %s
+            """, (ingredient['ingredient'],))
             ingredientId = cursor.fetchall()[0][0]
             print("\tRecipeIngredients...")
-            cursor.execute(f"""
+            cursor.execute("""
                 INSERT INTO RecipeIngredients (
                     recipe_id,
                     ingredient_id,
@@ -900,27 +899,30 @@ for recipeId in range(6660, 27000):
                     unit,
                     extra_descriptions
                 ) VALUES (
-                    {recipeId},
-                    {ingredientId},
-                    {ingredient['amount']},
-                    '{ingredient['unit']}',
-                    '{','.join(ingredient['descriptions'])}'
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s
                 )
-            """)
+            """, (
+                recipeId, ingredientId, ingredient['amount'], ingredient['unit'],
+                ','.join(ingredient['descriptions'])
+            ))
 
         print("\tDirections...")
         for direction in directions:
-            cursor.execute(f"""
+            cursor.execute("""
                 INSERT INTO Directions (
                     recipe_id,
                     direction,
                     step
                 ) VALUES (
-                    {recipeId},
-                    '{direction['direction']}',
-                    {direction['step']}
+                    %s,
+                    %s,
+                    %s
                 )
-                """)
+                """, (recipeId, direction['direction'], direction['step']))
         db.commit()
         print("Insert complete.")
 

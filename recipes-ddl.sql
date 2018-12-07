@@ -1,36 +1,42 @@
 CREATE DATABASE recipes;
 USE recipes;
 
+DROP TABLE Recipe;
+DROP TABLE RecipeImages;
+DROP TABLE Ingredients;
+DROP TABLE RecipeIngredients;
+DROP TABLE Directions;
+
 CREATE TABLE Recipe(
     recipe_id INT NOT NULL UNIQUE KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL PRIMARY KEY,
-    source VARCHAR(30),
-    source_url VARCHAR(100),
+    name VARCHAR(300) NOT NULL PRIMARY KEY,
+    source VARCHAR(300),
+    source_url VARCHAR(300),
     calories INT,
     servings INT
 );
 
 CREATE TABLE RecipeImages(
     recipe_id INT,
-    url VARCHAR(100) NOT NULL
+    url VARCHAR(300) NOT NULL
 );
 
 CREATE TABLE Ingredients(
     ingredient_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL UNIQUE KEY,
-    tags VARCHAR(200)
+    name VARCHAR(300) NOT NULL UNIQUE KEY,
+    tags VARCHAR(300)
 );
 
 CREATE TABLE RecipeIngredients(
     recipe_id INT NOT NULL,
     ingredient_id INT NOT NULL,
     amount FLOAT,
-    unit VARCHAR(10),
-    extra_descriptions VARCHAR(100)
+    unit VARCHAR(20),
+    extra_descriptions VARCHAR(300)
 );
 
 CREATE TABLE Directions(
-    recipe_id INT NOT NULL PRIMARY KEY,
+    recipe_id INT NOT NULL,
     direction VARCHAR(500) NOT NULL,
     step INT NOT NULL
 );

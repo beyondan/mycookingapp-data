@@ -15,5 +15,6 @@ pip3 install mysql-connector-python
 # allrecipes.py
 sudo apt install -y python3-bs4
 pip3 install nltk
+python3 -c "import nltk; nltk.download('punkt');"
 
 sudo apt install git
