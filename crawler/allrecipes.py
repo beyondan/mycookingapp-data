@@ -865,8 +865,8 @@ for recipeId in range(6660, 27000):
         #
         # insert ingredients into database
         #
-        print("\tIngredients...")
         for ingredient in ingredients:
+            print("\tIngredients...")
             try:
                 query = """
                     INSERT INTO Ingredients (
@@ -879,8 +879,8 @@ for recipeId in range(6660, 27000):
                 """
                 # print(f"Executing:\n{query}")
                 cursor.execute(query, (ingredient['ingredient'], ','.join(ingredient['labels'])))
-            except mysql.connect.Error as e:
-                if not e.errno == mysql.connect.errorcode.ER_DUP_KEY:
+            except mysql.connect.IntegrityError as e:
+                if not e.errno == mysql.connect.errorcode.ER_DUP_ENTRY:
                     raise
                 # print(f"Ingredient {ingredient['ingredient']} already exists in Ingredients")
 
@@ -890,6 +890,7 @@ for recipeId in range(6660, 27000):
                 WHERE name = %s
             """, (ingredient['ingredient'],))
             ingredientId = cursor.fetchall()[0][0]
+
             print("\tRecipeIngredients...")
             cursor.execute("""
                 INSERT INTO RecipeIngredients (
