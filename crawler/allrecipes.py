@@ -556,7 +556,7 @@ for recipeId in range(6660, 27000):
         imageLinks = []
         ul = soup.find('ul', class_='photo-strip__items')
         if ul is None:
-            ul = soup.find('ul', class_='image-filmstrip')
+            ul = soup.find('div', class_='image-filmstrip')
         for img in ul.find_all('img'):
             imageLinks.append(img['src'])
 
