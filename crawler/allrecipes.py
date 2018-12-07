@@ -458,12 +458,7 @@ outputFile.truncate()
 parenthesesRegex = re.compile(r"\([^()]*\)")
 
 # load list of all ingredients
-allIngredientsFile = open("allIngredients.txt", "r", encoding="ISO-8859-1")
-allIngredients = allIngredientsFile.read().split("\n")
-allIngredientsFile.close()
-
-while "" in allIngredients:
-    allIngredients.remove("")
+allIngredients = []
 
 unlabeledIngredients = set()
 unlabeledRecipes = set()

@@ -9,6 +9,11 @@ sudo systemctl enable mysql
 
 sudo apt install -y python3
 sudo apt install -y python3-pip
-sudo apt install build-essential libssl-dev libffi-dev python3-dev
+sudo apt install -y build-essential libssl-dev libffi-dev python3-dev
+pip3 install mysql-connector-python
+
+# allrecipes.py
+sudo apt install -y python3-bs4
+pip3 install nltk
 
 sudo apt install git
