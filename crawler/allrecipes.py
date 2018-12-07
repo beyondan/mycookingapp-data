@@ -448,7 +448,7 @@ hypenatedSuffixes = ['coated', 'free', 'flavored']
 #
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--checkpoint", type=int, defaultValue=6660)
+parser.add_argument("--checkpoint", type=int, default=6660)
 args = parser.parse_args()
 checkpoint = int(args.checkpoint)
 db = mysql.connector.connect(host="localhost",
