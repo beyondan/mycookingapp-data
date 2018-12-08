@@ -1,5 +1,5 @@
 
-from .parser import ParserError
+from parser import ParserError
 import argparse
 import mysql.connector
 import random
