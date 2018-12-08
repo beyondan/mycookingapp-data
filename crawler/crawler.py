@@ -25,6 +25,7 @@ for recipeId in range(args.checkpoint, 27000):
         allRecipesItem = AllRecipes(recipeId)
     except ParserError as e:
         print(str(e))
+        time.sleep(random.randint(10, 60))
         continue
     allRecipesItem.store(database=db)
     db.commit()
