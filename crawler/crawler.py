@@ -20,11 +20,11 @@ random.seed()
 
 print("=============== [Allrecipes] ===============")
 for recipeId in range(args.checkpoint, 27000):
-    print(f"Processing {recipeId}... ", end='')
     try:
         allRecipesItem = AllRecipes(recipeId)
     except ParserError:
         continue
+    print(f"Processing {recipeId}... ", end='')
     allRecipesItem.store(database=db)
     db.commit()
     print("done.")

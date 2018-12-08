@@ -24,7 +24,7 @@ class Parser:
             with urllib.request.urlopen(url) as response:
                 return BeautifulSoup(response.read(), "html.parser")
         except urllib.error.HTTPError as e:
-            raise ParserError(str(e))
+            raise ParserError("Recipe does not exist.")
         except urllib.error.URLError as e:
             raise ParserError(str(e))
         except socket.error as e:
