@@ -1,5 +1,4 @@
 
-from parser import ParserError
 import argparse
 import mysql.connector
 import random
@@ -23,11 +22,11 @@ for recipeId in range(args.checkpoint, 27000):
     print(f"Processing {recipeId}...  ", end='')
     try:
         allRecipesItem = AllRecipes(recipeId)
-    except ParserError as e:
+        allRecipesItem.store(database=db)
+        db.commit()
+        print("done.")
+        time.sleep(random.randint(10, 60))
+    except Exception as e:
         print(str(e))
         time.sleep(random.randint(10, 60))
         continue
-    allRecipesItem.store(database=db)
-    db.commit()
-    print("done.")
-    time.sleep(random.randint(10, 60))
