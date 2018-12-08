@@ -10,7 +10,7 @@ parenthesesRegex = re.compile(r"\([^()]*\)")
 
 class AllRecipes(Parser):
     def __init__(self, recipeId):
-        super().__init__(f"{BASE_URL}/{recipeId}")
+        super().__init__(f"{BASE_URL}/recipe/{recipeId}")
 
     def getTitle(self):
         return self.soup.find("title").text.split("Recipe")[0].strip()
