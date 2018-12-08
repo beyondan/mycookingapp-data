@@ -2,6 +2,7 @@
 import argparse
 import mysql.connector
 import logging
+import logging.handlers
 import random
 import sys
 import time
