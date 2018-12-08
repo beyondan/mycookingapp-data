@@ -1,5 +1,5 @@
 
-from .parser import Parser
+from parser import Parser
 import nltk
 import re
 
