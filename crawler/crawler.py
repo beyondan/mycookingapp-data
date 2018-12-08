@@ -10,7 +10,7 @@ sys.path.append('sites')
 from allrecipes import AllRecipes
 
 argparser = argparse.ArgumentParser()
-argparser.add_argument("--checkpoint", type=int, default=6660)
+argparser.add_argument("--checkpoint", type=int, default=6663)
 args = argparser.parse_args()
 
 db = mysql.connector.connect(host="localhost", user="root", passwd="root", db="recipes")

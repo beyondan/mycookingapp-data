@@ -96,7 +96,7 @@ class Parser:
         # Insert into Recipe and get the auto-incremented recipe_id.
         cursor.execute("INSERT INTO Recipe (name, source, url) VALUES (%s, %s, %s)",
                        (self.title, self.source, self.url))
-        cursor.execute("SELECT recipe_id FROM Recipe WHERE name = %s AND source_url = %s",
+        cursor.execute("SELECT recipe_id FROM Recipe WHERE name = %s AND url = %s",
                        (self.title, self.url))
         recipeId = cursor.fetchall()[0][0]
 
