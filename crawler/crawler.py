@@ -28,7 +28,7 @@ logger.addHandler(handler)
 
 print("=============== [Allrecipes] ===============")
 for recipeId in range(args.checkpoint, 27000):
-    logging.info(f"Processing {recipeId}...  ", end='')
+    logging.info(f"Processing {recipeId}...  ")
     try:
         allRecipesItem = AllRecipes(recipeId)
         allRecipesItem.store(database=db)
