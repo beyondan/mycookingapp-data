@@ -1,78 +1,59 @@
-#!/usr/bin/env python
 
-"""
-allrecipes.py
-
-This module inherits from RecipeParser, and provides an implementation
-for parsing recipes from the allrecipes.com site.
-
-"""
-
-from lxml import etree
-import json
+from .parser import Parser
+import nltk
 import re
 
-from parser import RecipeParser
 
-class AllRecipes(RecipeParser):
+BASE_URL = "http://allrecipes.com"
+parenthesesRegex = re.compile(r"\([^()]*\)")
 
-    # define some patterns to match/filter
-    otherURL = re.compile(r'^/recipe/', re.I)
+
+class AllRecipes(Parser):
+    def __init__(self, recipeId):
+        super().__init__(f"{BASE_URL}/{recipeId}")
 
     def getTitle(self):
-        """The title format is:
+        return self.soup.find("title").text.split("Recipe")[0].strip()
 
-        <title>'Recipe' Recipe - Allrecipes.com</title>
+    def getSource(self):
+        return BASE_URL
 
-        we want just 'Recipe'
-        """
-        return self.tree.xpath('//title')[0].text.split(' Recipe ')[0].strip()
+    def getImages(self):
+        images = []
+        ul = self.soup.find('ul', class_='photo-strip__items')
+        if ul is None:
+            ul = self.soup.find('div', class_='image-filmstrip')
+        for img in ul.find_all('img'):
+            images.append(img['src'])
+        return images
 
     def getIngredients(self):
-        """Return a list or a map of the recipe ingredients"""
-        data = []
-        for node in self.tree.xpath('//span[@itemprop="ingredients"]'):
-            data.append( ''.join(node.xpath('descendant-or-self::text()')).strip() )
-        return data
+        ingredients = []
+        for span in self.soup.find_all("span", itemprop="recipeIngredients"):
+            ingredients.append(span.text)
+        return ingredients
 
     def getDirections(self):
-        """Return a list or a map of the preparation instructions"""
-        data = []
-        for node in self.tree.xpath('//ol[@itemprop="recipeInstructions"][li]'):
-            for item in node:
-                data.append( ''.join(item.xpath('descendant-or-self::text()')).strip() )
-        return data
+        directions = []
+        directionsString = ""
 
-    def getTags(self):
-        """Return a list of tags for this recipe"""
-        return []
+        # concat all directions to one string
+        directionObjects = self.soup.find_all("li", class_="instructions-section-item")
+        if directionObjects:
+            for li in directionObjects:
+                directionsString += " " + li.find("p").text
+        else:
+            directionObjects = self.soup.find_all("span", class_="recipe-directions__list--item")
+            count = len(directionObjects) - 1  # 1 empty span at end
+            for i in range(count):
+                directionsString += " " + directionObjects[i].text
 
-    def getOtherRecipeLinks(self):
-        """Return a list of other recipes found in the page"""
-        data = {} # k = recipe id, v = recipe url
+        # use nltk to split direction string into sentences
+        individualDirections = nltk.sent_tokenize(directionsString)
+        for i in range(0, len(individualDirections)):
+            direction = {}
+            direction["step"] = i + 1
+            direction["direction"] = individualDirections[i]
+            directions.append(direction)
 
-        # type one: similar recipes carousel (page bottom)
-        for link in self.tree.xpath('//ul[@class="recipe-carousel"]/li[@class="slider-card"]/*/a'):
-            if 'href' in link.keys():
-                href = link.get('href')
-                if self.otherURL.search(href):
-                    parts = href.split('/')
-                    try:
-                        data[parts[2]] = 'http://allrecipes.com' + href
-                    except IndexError:
-                        pass
-
-        # type two: json embedded in the right side panel
-        for node in self.tree.xpath('//right-rail-feed'):
-            if 'my-feed-data' in node.keys():
-                feed = json.loads(node.get('my-feed-data'))
-                for item in feed['items']:
-                    if item.has_key('id'):
-                        recipeId = str(item['id'])
-                        if not data.has_key(recipeId):
-                            # these links are less descriptive,
-                            # so we do not want them over-writing
-                            # any pre-existing with the same id
-                            data[recipeId] = 'http://allrecipes.com/recipe/' + recipeId
-
-        return data.values()
+        return directions

@@ -11,9 +11,7 @@ CREATE TABLE Recipe(
     recipe_id INT NOT NULL UNIQUE KEY AUTO_INCREMENT,
     name VARCHAR(300) NOT NULL PRIMARY KEY,
     source VARCHAR(300),
-    source_url VARCHAR(300),
-    calories INT,
-    servings INT
+    url VARCHAR(300)
 );
 
 CREATE TABLE RecipeImages(
@@ -23,20 +21,16 @@ CREATE TABLE RecipeImages(
 
 CREATE TABLE Ingredients(
     ingredient_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(300) NOT NULL UNIQUE KEY,
-    tags VARCHAR(300)
+    name VARCHAR(300) NOT NULL UNIQUE KEY
 );
 
 CREATE TABLE RecipeIngredients(
     recipe_id INT NOT NULL,
-    ingredient_id INT NOT NULL,
-    amount FLOAT,
-    unit VARCHAR(20),
-    extra_descriptions VARCHAR(300)
+    ingredient_id INT NOT NULL
 );
 
 CREATE TABLE Directions(
     recipe_id INT NOT NULL,
-    direction VARCHAR(500) NOT NULL,
-    step INT NOT NULL
+    step INT NOT NULL,
+    direction VARCHAR(500) NOT NULL
 );
